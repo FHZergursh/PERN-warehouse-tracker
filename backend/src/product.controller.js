@@ -34,21 +34,52 @@ export const createProduct = async (req, res) => {
     if (!name || !price || !stock) {
       res.status(404).json({success: false, message: "Please enter all value"})
     }
-
     
+    const product = await sql `INSERT INTO producttable(name, price, stock)
+    VALUES (${name}, ${price}, ${stock})`
+
+    res.status(201).json({success: true, data:product[0]})
   }
   catch (error) {
-    console.log("Error in get product, ", error)
+    console.log("Error in create product, ", error)
     res.status(404).json({success: false, message: "Internal server error"})
   }
 }
 
 export const updateProduct = async (req, res) => {
-  res.status(200).json({message: "Hello!"})
+  try {
+    const {id} = req.params 
+    const {name, price, stock} = req.body
+
+    if (!name || !price || !stock) {
+      res.status(404).json({success: false, message: "Please enter all value"})
+    }
+
+    const product = await sql `UPDATE producttable
+    SET name = ${name}, price = ${price}, stock = ${stock}
+    WHERE id = ${id}`
+
+    res.status(201).json({success: true, data:product[0]})
+
+  } catch (error) {
+    console.log("Error in update product", error) 
+    res.status(404).json({success: false, message: "Internal server error"})
+  }
 }
 
 export const deleteProduct =  async (req, res) => {
-  res.status(200).json({message: "Hello!"})
+  try {
+    const {id} = req.params
+
+
+    const product = await sql `DELETE FROM producttable 
+    WHERE id = ${id}`
+
+    res.status(201).json({success: true, data:product[0]})
+  } catch (error) {
+    console.log("Error in delete product, ", error)
+    res.status(404).json({success: false, message: "Internal server error"})
+  }
 }
 
 
